@@ -4,6 +4,26 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2026-08-11
+
+### Added
+- Muted-app list now syncs between the phone and the Mac via a new `blocklist`
+  wire message: each side pushes its full snapshot on connect and after every
+  toggle, and peers merge per package with "newest edit wins" — unmutes
+  propagate too, with no ping-pong.
+- Android: home screen now shows a battery card, a now-playing (media) card,
+  and a transfer-history card for live and recent file transfers.
+- Android: new "Notifications" (POST_NOTIFICATIONS) row in the permissions
+  card, needed for received-file notifications and the Mac's E2E test.
+
+### Fixed
+- Android: E2E test notifications are dropped silently when
+  POST_NOTIFICATIONS is missing — the app now warns in the log and the Mac's
+  timeout message points at the right permission.
+- Android: outgoing file pump resumes from the stored offset instead of
+  restarting from byte zero.
+- Mac: QR code scales to fill its container instead of staying fixed-size.
+
 ## [1.1.0] - 2026-08-11
 
 ### Added
