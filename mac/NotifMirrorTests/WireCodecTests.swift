@@ -194,6 +194,20 @@ final class WireCodecTests: XCTestCase {
         XCTAssertEqual(reqId, "r7")
     }
 
+    func testBlocklistRoundTrip() throws {
+        let entries = [
+            WireMessage.BlocklistEntry(pkg: "com.whatsapp", blocked: true, updatedAt: 1_710_000_000_000),
+            WireMessage.BlocklistEntry(pkg: "com.telegram", blocked: false, updatedAt: 1_710_000_000_001),
+        ]
+        let m = try roundTrip(.blocklist(packages: entries))
+        guard case let .blocklist(packages) = m else { return XCTFail("expected blocklist") }
+        XCTAssertEqual(packages.count, 2)
+        XCTAssertEqual(packages[0].pkg, "com.whatsapp")
+        XCTAssertTrue(packages[0].blocked)
+        XCTAssertEqual(packages[0].updatedAt, 1_710_000_000_000)
+        XCTAssertFalse(packages[1].blocked)
+    }
+
     func testPingPongAndErrorRoundTrip() throws {
         guard case .ping = try roundTrip(.ping) else { return XCTFail("expected ping") }
         guard case .pong = try roundTrip(.pong) else { return XCTFail("expected pong") }

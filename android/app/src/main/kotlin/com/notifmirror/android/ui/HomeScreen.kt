@@ -1,10 +1,15 @@
 package com.notifmirror.android.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.Settings as SystemSettings
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import com.notifmirror.android.service.MirrorCore
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.RepeatMode
@@ -35,6 +40,7 @@ import androidx.compose.material.icons.filled.BatteryChargingFull
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.NotificationsActive
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Card
@@ -73,6 +79,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.notifmirror.android.data.PairingStore
 import com.notifmirror.android.data.Settings
+import com.notifmirror.android.service.BatteryBridge
+import com.notifmirror.android.service.FileBridge
+import com.notifmirror.android.service.MediaBridge
 import com.notifmirror.android.ui.theme.StatusConnected
 import com.notifmirror.android.ui.theme.StatusStopped
 import com.notifmirror.android.ui.theme.StatusWaiting
@@ -90,11 +99,20 @@ fun HomeScreen(onPair: () -> Unit, onOpenFilter: () -> Unit) {
             NotificationManagerCompat.getEnabledListenerPackages(context).contains(context.packageName)
         )
     }
+    var postNotifications by remember {
+        mutableStateOf(hasPostNotificationsPermission(context))
+    }
+    val postNotifLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted -> postNotifications = granted }
     val settings = remember { Settings.get(context) }
     var skipSilent by remember { mutableStateOf(settings.skipSilent) }
 
     val serviceRunning by MirrorCore.runningFlow.collectAsState()
     val serviceConnected by MirrorCore.connectedFlow.collectAsState()
+    val battery by BatteryBridge.state.collectAsState()
+    val media by MediaBridge.state.collectAsState()
+    val transfers by FileBridge.transfers.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
@@ -103,6 +121,7 @@ fun HomeScreen(onPair: () -> Unit, onOpenFilter: () -> Unit) {
                 listenerEnabled.value = NotificationManagerCompat
                     .getEnabledListenerPackages(context)
                     .contains(context.packageName)
+                postNotifications = hasPostNotificationsPermission(context)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -141,6 +160,10 @@ fun HomeScreen(onPair: () -> Unit, onOpenFilter: () -> Unit) {
                 serviceConnected = serviceConnected,
                 onPair = onPair
             )
+
+            BatteryCard(battery)
+
+            NowPlayingCard(media)
 
             QuickActions(
                 onOpenFilter = onOpenFilter,
@@ -188,6 +211,10 @@ fun HomeScreen(onPair: () -> Unit, onOpenFilter: () -> Unit) {
                     }
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context.startActivity(intent)
+                },
+                postNotificationsGranted = postNotifications,
+                onOpenPostNotifications = {
+                    postNotifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                 }
             )
 
@@ -198,6 +225,8 @@ fun HomeScreen(onPair: () -> Unit, onOpenFilter: () -> Unit) {
                     settings.skipSilent = it
                 }
             )
+
+            TransferCard(transfers)
 
             TipCard()
 
@@ -457,7 +486,9 @@ private fun PermissionsCard(
     notificationAccessGranted: Boolean,
     onOpenNotificationAccess: () -> Unit,
     allFilesGranted: Boolean,
-    onOpenAllFilesAccess: () -> Unit
+    onOpenAllFilesAccess: () -> Unit,
+    postNotificationsGranted: Boolean,
+    onOpenPostNotifications: () -> Unit
 ) {
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -479,6 +510,13 @@ private fun PermissionsCard(
                 onClick = onOpenNotificationAccess
             )
             SettingRow(
+                icon = Icons.Filled.Info,
+                title = "Notifications",
+                subtitle = if (postNotificationsGranted) "Granted" else "Needed for received files & the Mac's test",
+                statusOk = postNotificationsGranted,
+                onClick = onOpenPostNotifications
+            )
+            SettingRow(
                 icon = Icons.Filled.Folder,
                 title = "All files access (for Mac file browser)",
                 subtitle = if (allFilesGranted) "Granted — Mac can browse phone files" else "Tap to grant; optional",
@@ -486,6 +524,16 @@ private fun PermissionsCard(
                 onClick = onOpenAllFilesAccess
             )
         }
+    }
+}
+
+private fun hasPostNotificationsPermission(context: android.content.Context): Boolean {
+    return if (Build.VERSION.SDK_INT >= 33) {
+        ContextCompat.checkSelfPermission(
+            context, Manifest.permission.POST_NOTIFICATIONS
+        ) == PackageManager.PERMISSION_GRANTED
+    } else {
+        true
     }
 }
 

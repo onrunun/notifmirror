@@ -8,6 +8,9 @@ import android.os.BatteryManager
 import android.os.Build
 import android.util.Log
 import com.notifmirror.android.protocol.WireMessage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Watches the system battery state via the sticky `ACTION_BATTERY_CHANGED`
@@ -18,6 +21,9 @@ import com.notifmirror.android.protocol.WireMessage
  * transitions, plug source changes, or low-state toggles. A hard 5s
  * minimum interval guards against the brief level chatter that happens
  * around plug-in.
+ *
+ * The latest snapshot is also published on [state] so the app's own UI can
+ * show it without waiting for the next system broadcast.
  */
 class BatteryBridge(private val context: Context) {
 
@@ -144,6 +150,7 @@ class BatteryBridge(private val context: Context) {
             low = lastLow,
             updatedAt = now
         )
+        _state.value = msg
         Log.i(TAG, "publish level=$pct charging=$charging status=$status plugged=$plugged")
         MirrorCore.dispatch(msg)
     }
@@ -156,17 +163,20 @@ class BatteryBridge(private val context: Context) {
         if (lastLevel == -1 && (now - lastSentAt) < MIN_INTERVAL_MS) return
         lastLevel = -1
         lastSentAt = now
-        MirrorCore.dispatch(
-            WireMessage.BatteryState(
-                level = -1, charging = false, status = "unknown",
-                plugged = "unknown", temperatureC = null, voltageMv = null,
-                low = false, updatedAt = now
-            )
+        val msg = WireMessage.BatteryState(
+            level = -1, charging = false, status = "unknown",
+            plugged = "unknown", temperatureC = null, voltageMv = null,
+            low = false, updatedAt = now
         )
+        _state.value = msg
+        MirrorCore.dispatch(msg)
     }
 
     companion object {
         private const val TAG = "BatteryBridge"
         private const val MIN_INTERVAL_MS = 5_000L
+
+        private val _state = MutableStateFlow<WireMessage.BatteryState?>(null)
+        val state: StateFlow<WireMessage.BatteryState?> = _state.asStateFlow()
     }
 }

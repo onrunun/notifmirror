@@ -20,6 +20,25 @@ import java.io.OutputStream
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.random.Random
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+
+/** A transfer shown in the app's Transfers card. Both directions, live and
+ *  recently-finished. */
+data class TransferEntry(
+    val id: String,
+    val direction: Direction,
+    val name: String,
+    val size: Long,
+    val bytesTransferred: Long,
+    val status: Status,
+    val updatedAt: Long
+) {
+    enum class Direction { Incoming, Outgoing }
+    enum class Status { Pending, Active, Done, Failed, Cancelled }
+}
 
 /**
  * Handles incoming file transfers from the Mac (writes to Downloads via
@@ -66,6 +85,14 @@ class FileBridge(private val context: Context) {
         }
     }
 
+    private fun upsert(entry: TransferEntry) {
+        _transfers.update { current ->
+            val next = (current.filterNot { it.id == entry.id } + entry)
+                .sortedByDescending { it.updatedAt }
+            next.take(HISTORY_LIMIT)
+        }
+    }
+
     fun cancelAll() {
         incoming.keys.toList().forEach { xid ->
             val s = incoming.remove(xid) ?: return@forEach
@@ -88,6 +115,17 @@ class FileBridge(private val context: Context) {
                 tempFile = temp,
                 outputStream = os,
                 received = 0
+            )
+            upsert(
+                TransferEntry(
+                    id = offer.xid,
+                    direction = TransferEntry.Direction.Incoming,
+                    name = offer.name,
+                    size = offer.size,
+                    bytesTransferred = 0,
+                    status = TransferEntry.Status.Active,
+                    updatedAt = System.currentTimeMillis()
+                )
             )
             // Keep the Wi-Fi radio active during the incoming transfer so AP→
             // phone chunks aren't stuck in DTIM buffers. Balanced in onDone /
@@ -118,6 +156,17 @@ class FileBridge(private val context: Context) {
                 s.outputStream.write(bytes)
                 s.received += bytes.size
             }
+            upsert(
+                TransferEntry(
+                    id = xid,
+                    direction = TransferEntry.Direction.Incoming,
+                    name = s.name,
+                    size = s.size,
+                    bytesTransferred = s.received,
+                    status = TransferEntry.Status.Active,
+                    updatedAt = System.currentTimeMillis()
+                )
+            )
             // `last` is informational here; the FileDone WS message still
             // drives the flush/close/ack path in onDone.
             @Suppress("UNUSED_PARAMETER") val _u = offset
@@ -146,6 +195,17 @@ class FileBridge(private val context: Context) {
             failIncoming(done.xid, "io_error"); return
         }
         if (ok) notifyArrived(s)
+        upsert(
+            TransferEntry(
+                id = done.xid,
+                direction = TransferEntry.Direction.Incoming,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = s.received,
+                status = if (ok) TransferEntry.Status.Done else TransferEntry.Status.Failed,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
         MirrorCore.dispatch(WireMessage.FileAck(done.xid, ok, err))
     }
 
@@ -209,6 +269,17 @@ class FileBridge(private val context: Context) {
         RadioKeepAlive.end()
         runCatching { s.outputStream.close() }
         s.tempFile?.delete()
+        upsert(
+            TransferEntry(
+                id = cancel.xid,
+                direction = TransferEntry.Direction.Incoming,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = s.received,
+                status = TransferEntry.Status.Cancelled,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
         // Nothing to ack; sender already gave up.
     }
 
@@ -217,6 +288,17 @@ class FileBridge(private val context: Context) {
         RadioKeepAlive.end()
         runCatching { s.outputStream.close() }
         s.tempFile?.delete()
+        upsert(
+            TransferEntry(
+                id = xid,
+                direction = TransferEntry.Direction.Incoming,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = s.received,
+                status = TransferEntry.Status.Failed,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
         MirrorCore.dispatch(WireMessage.FileCancel(xid, reason))
     }
 
@@ -268,6 +350,17 @@ class FileBridge(private val context: Context) {
     fun sendFile(uri: Uri, displayName: String, size: Long): String {
         val xid = newXid()
         outgoing[xid] = Outgoing(xid = xid, name = displayName, size = size, uri = uri, offset = 0)
+        upsert(
+            TransferEntry(
+                id = xid,
+                direction = TransferEntry.Direction.Outgoing,
+                name = displayName,
+                size = size,
+                bytesTransferred = 0,
+                status = TransferEntry.Status.Pending,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
         MirrorCore.dispatch(
             WireMessage.FileOffer(
                 xid = xid, name = displayName, size = size, mime = null, sha256 = null
@@ -278,16 +371,49 @@ class FileBridge(private val context: Context) {
 
     private fun onAccept(accept: WireMessage.FileAccept) {
         val s = outgoing[accept.xid] ?: return
+        upsert(
+            TransferEntry(
+                id = accept.xid,
+                direction = TransferEntry.Direction.Outgoing,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = 0,
+                status = TransferEntry.Status.Active,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
         // Pump from a background thread so the socket stays responsive.
         Thread({ pump(s) }, "file-pump-${s.xid}").start()
     }
 
     private fun onReject(reject: WireMessage.FileReject) {
-        outgoing.remove(reject.xid)
+        val s = outgoing.remove(reject.xid) ?: return
+        upsert(
+            TransferEntry(
+                id = reject.xid,
+                direction = TransferEntry.Direction.Outgoing,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = s.offset,
+                status = TransferEntry.Status.Cancelled,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
     }
 
     private fun onAck(ack: WireMessage.FileAck) {
-        outgoing.remove(ack.xid)
+        val s = outgoing.remove(ack.xid) ?: return
+        upsert(
+            TransferEntry(
+                id = ack.xid,
+                direction = TransferEntry.Direction.Outgoing,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = s.offset,
+                status = if (ack.ok) TransferEntry.Status.Done else TransferEntry.Status.Failed,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
     }
 
     private fun pump(s: Outgoing) {
@@ -296,7 +422,7 @@ class FileBridge(private val context: Context) {
         try {
             resolver.openInputStream(s.uri)?.use { input ->
                 val buf = ByteArray(CHUNK_SIZE)
-                var offset = 0L
+                var offset = s.offset
                 while (!s.cancelled) {
                     val n = input.read(buf)
                     if (n <= 0) break
@@ -314,27 +440,49 @@ class FileBridge(private val context: Context) {
                         id = s.xid, offset = offset, payload = payload, last = last
                     )
                     if (!sent) {
+                        upsertProgress(s, offset, TransferEntry.Status.Failed)
                         MirrorCore.dispatch(WireMessage.FileCancel(s.xid, "ws_unavailable"))
                         outgoing.remove(s.xid)
                         return@use
                     }
                     offset += n
+                    s.offset = offset
+                    upsertProgress(s, offset, TransferEntry.Status.Active)
                     if (last) break
                 }
                 if (!s.cancelled) {
+                    upsertProgress(s, offset, TransferEntry.Status.Done)
                     MirrorCore.dispatch(WireMessage.FileDone(s.xid))
+                } else {
+                    upsertProgress(s, offset, TransferEntry.Status.Cancelled)
                 }
             } ?: run {
+                upsertProgress(s, s.offset, TransferEntry.Status.Failed)
                 MirrorCore.dispatch(WireMessage.FileCancel(s.xid, "io_error"))
                 outgoing.remove(s.xid)
             }
         } catch (e: Throwable) {
             Log.w(TAG, "pump failed", e)
+            upsertProgress(s, s.offset, TransferEntry.Status.Failed)
             MirrorCore.dispatch(WireMessage.FileCancel(s.xid, "io_error"))
             outgoing.remove(s.xid)
         } finally {
             RadioKeepAlive.end()
         }
+    }
+
+    private fun upsertProgress(s: Outgoing, transferred: Long, status: TransferEntry.Status) {
+        upsert(
+            TransferEntry(
+                id = s.xid,
+                direction = TransferEntry.Direction.Outgoing,
+                name = s.name,
+                size = s.size,
+                bytesTransferred = transferred,
+                status = status,
+                updatedAt = System.currentTimeMillis()
+            )
+        )
     }
 
     private fun newXid(): String {
@@ -346,6 +494,11 @@ class FileBridge(private val context: Context) {
     companion object {
         private const val TAG = "FileBridge"
         private const val CHUNK_SIZE = 256 * 1024
+        private const val HISTORY_LIMIT = 30
         private val notifyIdSeq = AtomicInteger(5000)
+
+        /** Live + recently-finished transfers, newest first, for the app UI. */
+        private val _transfers = MutableStateFlow<List<TransferEntry>>(emptyList())
+        val transfers: StateFlow<List<TransferEntry>> = _transfers.asStateFlow()
     }
 }

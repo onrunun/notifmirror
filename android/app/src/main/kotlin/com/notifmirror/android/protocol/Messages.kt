@@ -156,6 +156,14 @@ sealed class WireMessage {
      *  Mac can correlate the round-trip. */
     data class TestRequest(val reqId: String) : WireMessage()
 
+    /** Full muted-app state, sent both ways. Each entry carries the wall-clock
+     *  time (epoch ms) of the last local edit, so peers merge by "newest edit
+     *  wins" per package — this is what lets unmutes propagate without the
+     *  two sides endlessly re-echoing each other. */
+    data class BlocklistEntry(val pkg: String, val blocked: Boolean, val updatedAt: Long)
+
+    data class Blocklist(val packages: List<BlocklistEntry>) : WireMessage()
+
     object Ping : WireMessage()
     object Pong : WireMessage()
     data class Error(val code: String, val msg: String) : WireMessage()
@@ -387,6 +395,18 @@ object WireCodec {
             is WireMessage.TestRequest -> {
                 obj.put("t", "test_request"); obj.put("reqId", message.reqId)
             }
+            is WireMessage.Blocklist -> {
+                obj.put("t", "blocklist")
+                val arr = JSONArray()
+                message.packages.forEach { e ->
+                    val eo = JSONObject()
+                    eo.put("pkg", e.pkg)
+                    eo.put("blocked", e.blocked)
+                    eo.put("updatedAt", e.updatedAt)
+                    arr.put(eo)
+                }
+                obj.put("packages", arr)
+            }
             WireMessage.Ping -> obj.put("t", "ping")
             WireMessage.Pong -> obj.put("t", "pong")
             is WireMessage.Error -> {
@@ -589,6 +609,21 @@ object WireCodec {
                 reason = obj.optString("reason", "abandoned")
             )
             "test_request" -> WireMessage.TestRequest(reqId = obj.getString("reqId"))
+            "blocklist" -> {
+                val arr = obj.optJSONArray("packages")
+                val packages = ArrayList<WireMessage.BlocklistEntry>(arr?.length() ?: 0)
+                if (arr != null) for (i in 0 until arr.length()) {
+                    val e = arr.getJSONObject(i)
+                    packages.add(
+                        WireMessage.BlocklistEntry(
+                            pkg = e.getString("pkg"),
+                            blocked = e.optBoolean("blocked"),
+                            updatedAt = e.optLong("updatedAt")
+                        )
+                    )
+                }
+                WireMessage.Blocklist(packages)
+            }
             "ping" -> WireMessage.Ping
             "pong" -> WireMessage.Pong
             "error" -> WireMessage.Error(

@@ -1,6 +1,7 @@
 package com.notifmirror.android.protocol
 
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -249,6 +250,25 @@ class WireCodecTest {
         val m = roundTrip(WireMessage.TestRequest("r7"))
         assertTrue(m is WireMessage.TestRequest)
         assertEquals("r7", (m as WireMessage.TestRequest).reqId)
+    }
+
+    @Test
+    fun blocklistRoundTrip() {
+        val m = roundTrip(
+            WireMessage.Blocklist(
+                listOf(
+                    WireMessage.BlocklistEntry("com.whatsapp", true, 1_710_000_000_000),
+                    WireMessage.BlocklistEntry("com.telegram", false, 1_710_000_000_001)
+                )
+            )
+        )
+        assertTrue(m is WireMessage.Blocklist)
+        val b = m as WireMessage.Blocklist
+        assertEquals(2, b.packages.size)
+        assertEquals("com.whatsapp", b.packages[0].pkg)
+        assertTrue(b.packages[0].blocked)
+        assertEquals(1_710_000_000_000, b.packages[0].updatedAt)
+        assertFalse(b.packages[1].blocked)
     }
 
     @Test

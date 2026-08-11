@@ -2038,7 +2038,7 @@ private struct SettingsPane: View {
             appState.pendingE2ETestReqId = nil
         }
         e2eDiagnostic = .init(ok: false,
-            message: "No matching `posted` arrived within \(Int(timeout))s. Either Android didn't receive the test request, didn't have notification access granted, or the listener isn't bound. Check the phone's logs.")
+            message: "No matching `posted` arrived within \(Int(timeout))s. Check the phone: is the NotifMirror app's \"Notifications\" (POST_NOTIFICATIONS) permission granted, and is Notification Access on? See NotifMirror → Notifications on the phone.")
     }
 
     @MainActor

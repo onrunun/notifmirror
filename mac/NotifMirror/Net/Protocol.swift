@@ -64,6 +64,12 @@ enum WireMessage {
     /// `posted.text`.
     case testRequest(reqId: String)
 
+    /// Full muted-app snapshot, sent both ways. Each entry carries the
+    /// wall-clock time (epoch ms) of the last local edit, so peers merge
+    /// "newest edit wins" per package — which lets unmutes propagate without
+    /// the two sides endlessly re-echoing each other.
+    case blocklist(packages: [BlocklistEntry])
+
     case ping
     case pong
     case error(code: String, msg: String)
@@ -143,6 +149,12 @@ enum WireMessage {
         let totalSize: Int64
         let fileCount: Int64
         var id: String { name }
+    }
+
+    struct BlocklistEntry: Equatable {
+        let pkg: String
+        let blocked: Bool
+        let updatedAt: Int64
     }
 }
 
@@ -315,6 +327,13 @@ enum WireCodec {
             dict["t"] = "fs_cancel"; dict["reqId"] = reqId; dict["reason"] = reason
         case let .testRequest(reqId):
             dict["t"] = "test_request"; dict["reqId"] = reqId
+        case let .blocklist(packages):
+            dict["t"] = "blocklist"
+            dict["packages"] = packages.map { [
+                "pkg": $0.pkg,
+                "blocked": $0.blocked,
+                "updatedAt": $0.updatedAt,
+            ] }
         case .ping:
             dict["t"] = "ping"
         case .pong:
@@ -574,6 +593,17 @@ enum WireCodec {
             guard let reqId = dict["reqId"] as? String
             else { throw WireError.malformed("test_request missing reqId") }
             return .testRequest(reqId: reqId)
+        case "blocklist":
+            let raw = (dict["packages"] as? [[String: Any]]) ?? []
+            let packages: [WireMessage.BlocklistEntry] = raw.compactMap { e in
+                guard let pkg = e["pkg"] as? String else { return nil }
+                return WireMessage.BlocklistEntry(
+                    pkg: pkg,
+                    blocked: (e["blocked"] as? Bool) ?? false,
+                    updatedAt: (e["updatedAt"] as? Int64) ?? Int64((e["updatedAt"] as? Int) ?? 0)
+                )
+            }
+            return .blocklist(packages: packages)
         case "ping":
             return .ping
         case "pong":

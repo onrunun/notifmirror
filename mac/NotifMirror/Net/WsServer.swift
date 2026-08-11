@@ -303,6 +303,11 @@ final class WsServer: @unchecked Sendable {
                 if peerFeatures.contains("media") {
                     send(.mediaCmd(cmd: "refresh", value: nil), on: conn)
                 }
+                // Push our muted-app snapshot so the two sides converge on
+                // (re)connect. The phone does the same from its side.
+                Task { @MainActor in
+                    WsServer.shared.send(.blocklist(packages: BlockedApps.shared.snapshot()))
+                }
             default:
                 sendError(on: conn, code: "bad_secret", msg: "hello required first")
                 queue.asyncAfter(deadline: .now() + 0.1) { conn.cancel() }
@@ -339,6 +344,10 @@ final class WsServer: @unchecked Sendable {
         case .batteryState(let b):
             Task { @MainActor in
                 BatteryStore.shared.handleRemoteState(b)
+            }
+        case .blocklist(let packages):
+            Task { @MainActor in
+                BlockedApps.shared.applyRemote(packages)
             }
         case let .fileOffer(offer):
             Task { @MainActor in

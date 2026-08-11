@@ -7,6 +7,7 @@ import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Log
+import com.notifmirror.android.data.BlockedApps
 import com.notifmirror.android.data.PairingStore
 import com.notifmirror.android.protocol.WireMessage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,6 +69,9 @@ class MirrorCore(context: Context) : WsClientCallbacks {
         _runningFlow.value = true
         mediaBridge.start()
         batteryBridge.start()
+        // Push our muted-app snapshot whenever the user toggles a package in
+        // the app — the Mac merges "newest edit wins" per package.
+        BlockedApps.get(appContext).onChange = { pushBlocklist() }
         initWifiHighPerfLock()
         ensureRunning()
         registerNetworkCallback()
@@ -251,7 +255,21 @@ class MirrorCore(context: Context) : WsClientCallbacks {
         // Same for battery — push initial state so the Mac shows it without
         // waiting for the next system broadcast.
         batteryBridge.publishIfConnected()
+        // Push our muted-app list so the two sides converge on reconnect.
+        pushBlocklist()
         // dataPort is retired — bulk file bytes now ride as WS binary frames.
+    }
+
+    /** Ship the current muted-app snapshot to the Mac. No-op when the socket
+     *  isn't up; `dispatch` queues for the next connect. */
+    private fun pushBlocklist() {
+        val snapshot = BlockedApps.get(appContext).snapshot()
+        if (snapshot.isEmpty()) return
+        dispatch(WireMessage.Blocklist(snapshot))
+    }
+
+    override fun onBlocklist(entries: List<WireMessage.BlocklistEntry>) {
+        BlockedApps.get(appContext).applyRemote(entries)
     }
 
     override fun onDisconnected() {
@@ -318,6 +336,13 @@ class MirrorCore(context: Context) : WsClientCallbacks {
         // The reqId is embedded in the body so the Mac can correlate the
         // returned `posted` to its outstanding request.
         try {
+            if (Build.VERSION.SDK_INT >= 33 &&
+                android.Manifest.permission.POST_NOTIFICATIONS.let { perm ->
+                    appContext.checkSelfPermission(perm) != android.content.pm.PackageManager.PERMISSION_GRANTED
+                }
+            ) {
+                Log.w(TAG, "test_request: POST_NOTIFICATIONS not granted — notification will be dropped by the OS")
+            }
             val nm = appContext.getSystemService(android.app.NotificationManager::class.java)
                 ?: run { Log.w(TAG, "test_request: NotificationManager unavailable"); return }
             val notif = android.app.Notification.Builder(

@@ -14,6 +14,9 @@ import android.util.Base64
 import android.util.Log
 import com.notifmirror.android.protocol.WireMessage
 import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * Reads the active media session via MediaSessionManager (allowed because we
@@ -23,6 +26,10 @@ import java.io.ByteArrayOutputStream
  *
  * State updates are throttled to one per 500 ms so seek-scrub doesn't flood
  * the socket.
+ *
+ * The latest snapshot is also published on [state] so the app's own UI can
+ * render a now-playing card, and transport commands can be issued locally
+ * through [current].
  */
 class MediaBridge(private val context: Context) {
 
@@ -46,6 +53,7 @@ class MediaBridge(private val context: Context) {
 
     fun start() {
         try {
+            instance = this
             mgr.addOnActiveSessionsChangedListener(sessionsListener, listenerComponent)
             rebind(mgr.getActiveSessions(listenerComponent))
         } catch (e: SecurityException) {
@@ -54,6 +62,7 @@ class MediaBridge(private val context: Context) {
     }
 
     fun stop() {
+        if (instance === this) instance = null
         try { mgr.removeOnActiveSessionsChangedListener(sessionsListener) } catch (_: Throwable) {}
         controllerCallbacks.forEach { (c, cb) -> try { c.unregisterCallback(cb) } catch (_: Throwable) {} }
         controllerCallbacks.clear()
@@ -147,6 +156,7 @@ class MediaBridge(private val context: Context) {
             snapshot(c, volume, maxVolume)
         }
         lastPublishedAt = System.currentTimeMillis()
+        _state.value = msg
         MirrorCore.dispatch(msg)
     }
 
@@ -228,5 +238,15 @@ class MediaBridge(private val context: Context) {
         return Bitmap.createScaledBitmap(bmp, (w * ratio).toInt(), (h * ratio).toInt(), true)
     }
 
-    companion object { private const val TAG = "MediaBridge" }
+    companion object {
+        private const val TAG = "MediaBridge"
+
+        private val _state = MutableStateFlow<WireMessage.MediaState?>(null)
+        val state: StateFlow<WireMessage.MediaState?> = _state.asStateFlow()
+
+        @Volatile private var instance: MediaBridge? = null
+        /** The live bridge (while the notification listener is bound), for
+         *  local UI transport buttons. Null when the service isn't running. */
+        fun current(): MediaBridge? = instance
+    }
 }

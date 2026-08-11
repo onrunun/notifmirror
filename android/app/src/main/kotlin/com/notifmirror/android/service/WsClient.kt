@@ -33,6 +33,8 @@ interface WsClientCallbacks {
     /** Mac asked us to fire a real local notification from this app's
      *  package so the listener mirrors it back end-to-end. */
     fun onTestRequest(reqId: String) {}
+    /** Peer pushed its muted-app snapshot (blocklist sync). */
+    fun onBlocklist(entries: List<WireMessage.BlocklistEntry>) {}
 }
 
 class WsClient(
@@ -208,6 +210,7 @@ class WsClient(
                 is WireMessage.FsChunk,
                 is WireMessage.FsCancel -> callbacks.onFsMessage(message)
                 is WireMessage.TestRequest -> callbacks.onTestRequest(message.reqId)
+                is WireMessage.Blocklist -> callbacks.onBlocklist(message.packages)
                 WireMessage.Ping -> webSocket.send(WireCodec.encode(WireMessage.Pong))
                 WireMessage.Pong -> {}
                 is WireMessage.Error -> Log.w(TAG, "server error: ${message.code} ${message.msg}")

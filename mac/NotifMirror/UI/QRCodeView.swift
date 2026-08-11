@@ -12,10 +12,11 @@ struct QRCodeView: View {
             Image(nsImage: image)
                 .interpolation(.none)
                 .resizable()
-                .frame(width: size, height: size)
+                .aspectRatio(1, contentMode: .fit)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             Text("Failed to generate QR")
-                .frame(width: size, height: size)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .background(Color.red.opacity(0.2))
         }
     }

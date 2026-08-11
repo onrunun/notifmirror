@@ -2,6 +2,7 @@ package com.notifmirror.android.data
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.notifmirror.android.protocol.WireMessage
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -9,12 +10,22 @@ import org.json.JSONObject
  * Per-package mute list and seen-app tracker.
  * Backed by regular SharedPreferences (no need to encrypt this — it's just
  * package names the user has muted).
+ *
+ * The blocked list is stored as timestamped entries (pkg → blocked state +
+ * last-edit time). That snapshot is what gets shipped to the paired Mac, which
+ * merges "newest edit wins" per package so mutes and unmutes both propagate.
  */
 class BlockedApps private constructor(ctx: Context) {
     private val prefs: SharedPreferences = ctx.applicationContext
         .getSharedPreferences("blocked_apps", Context.MODE_PRIVATE)
 
     data class SeenApp(val pkg: String, val name: String, val lastSeen: Long, val count: Long = 0L)
+
+    data class BlockState(val pkg: String, val blocked: Boolean, val updatedAt: Long)
+
+    /** Fired after every local change so the mirror core can push a fresh
+     *  snapshot to the Mac. */
+    var onChange: (() -> Unit)? = null
 
     /** Called every time a notification arrives. Records pkg→name and
      *  returns true if the user has muted this package. */
@@ -36,12 +47,34 @@ class BlockedApps private constructor(ctx: Context) {
 
     @Synchronized
     fun setBlocked(pkg: String, blocked: Boolean) {
-        val s = blockedSet().toMutableSet()
-        if (blocked) s.add(pkg) else s.remove(pkg)
-        prefs.edit().putStringSet(KEY_BLOCKED, s).apply()
+        val map = loadState().toMutableMap()
+        map[pkg] = BlockState(pkg, blocked, System.currentTimeMillis())
+        saveState(map)
+        onChange?.invoke()
     }
 
-    fun blockedSet(): Set<String> = prefs.getStringSet(KEY_BLOCKED, emptySet()) ?: emptySet()
+    /** Merge a snapshot from the paired peer. For each package the newer edit
+     *  wins; returns true if anything changed. Never echoes back. */
+    @Synchronized
+    fun applyRemote(entries: List<WireMessage.BlocklistEntry>): Boolean {
+        val map = loadState().toMutableMap()
+        var changed = false
+        for (e in entries) {
+            val cur = map[e.pkg]
+            if (cur == null || e.updatedAt > cur.updatedAt) {
+                map[e.pkg] = BlockState(e.pkg, e.blocked, e.updatedAt)
+                changed = true
+            }
+        }
+        if (changed) saveState(map)
+        return changed
+    }
+
+    fun snapshot(): List<WireMessage.BlocklistEntry> =
+        loadState().values.map { WireMessage.BlocklistEntry(it.pkg, it.blocked, it.updatedAt) }
+
+    fun blockedSet(): Set<String> =
+        loadState().values.filter { it.blocked }.map { it.pkg }.toSet()
 
     fun loadSeen(): List<SeenApp> {
         val raw = prefs.getString(KEY_SEEN, null) ?: return emptyList()
@@ -77,9 +110,39 @@ class BlockedApps private constructor(ctx: Context) {
         prefs.edit().putString(KEY_SEEN, arr.toString()).apply()
     }
 
+    private fun loadState(): Map<String, BlockState> {
+        val raw = prefs.getString(KEY_STATE, null) ?: return emptyMap()
+        return try {
+            val arr = JSONArray(raw)
+            val out = HashMap<String, BlockState>(arr.length())
+            for (i in 0 until arr.length()) {
+                val o = arr.getJSONObject(i)
+                val s = BlockState(
+                    o.getString("pkg"),
+                    o.optBoolean("blocked"),
+                    o.optLong("updatedAt")
+                )
+                out[s.pkg] = s
+            }
+            out
+        } catch (_: Throwable) { emptyMap() }
+    }
+
+    private fun saveState(map: Map<String, BlockState>) {
+        val arr = JSONArray()
+        map.values.forEach { s ->
+            arr.put(JSONObject().apply {
+                put("pkg", s.pkg)
+                put("blocked", s.blocked)
+                put("updatedAt", s.updatedAt)
+            })
+        }
+        prefs.edit().putString(KEY_STATE, arr.toString()).apply()
+    }
+
     companion object {
-        private const val KEY_BLOCKED = "blocked"
         private const val KEY_SEEN = "seen_v1"
+        private const val KEY_STATE = "blocked_v2"
 
         @Volatile private var instance: BlockedApps? = null
 

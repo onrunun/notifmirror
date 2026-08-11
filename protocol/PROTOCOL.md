@@ -626,6 +626,36 @@ the Mac surfaces a timeout if no matching `posted` arrives within ~5 s.
 
 ---
 
+## Muted-app sync (`blocklist`)
+
+Both sides keep an independent per-package mute list; this message keeps the
+two converged. It carries the **full snapshot**, not deltas.
+
+### `blocklist` — either direction
+
+```json
+{"t":"blocklist","v":2,"packages":[
+  {"pkg":"com.whatsapp","blocked":true,"updatedAt":1710000000000},
+  {"pkg":"com.telegram","blocked":false,"updatedAt":1710000000001}
+]}
+```
+
+Each entry records the package, whether it's muted, and the wall-clock time
+(epoch ms) of the **last local edit**. A peer that receives the snapshot
+merges *per package* with "newest edit wins" (strict `>` on `updatedAt`) and
+persists any change. Including `blocked:false` entries — not just mutes — is
+what lets unmutes propagate.
+
+Send policy, identical on both sides:
+- on connect (right after `hello_ack`), push the current snapshot;
+- after every local toggle of a package, push the full snapshot again.
+
+Receivers never echo a received snapshot back, so there's no ping-pong; both
+sides push on connect, and the max-timestamp merge converges to the most
+recent edit per package.
+
+---
+
 ## `ping` / `pong` — either direction
 
 ```json
