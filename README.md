@@ -57,7 +57,9 @@ android/                 # Gradle Kotlin project
 
 ## Prerequisites
 
-- macOS 14+ with Xcode 15+ (Xcode ad-hoc signing is fine).
+- macOS 14+ with Xcode 26+ (the macOS 26 SDK is required to build —
+  `SelfSignedCert` uses `SecIdentityCreate`, which older SDKs don't declare).
+  Xcode ad-hoc signing is fine.
 - [`xcodegen`](https://github.com/yonaskolb/XcodeGen): `brew install xcodegen`.
 - JDK 17+. Android Studio ships a JBR 21 at
   `/Applications/Android Studio.app/Contents/jbr/Contents/Home`. Set `JAVA_HOME`
@@ -232,7 +234,7 @@ so it inherits your shell PATH, or move the binaries into `/opt/homebrew/bin`
 
 ## Tooling versions used
 
-- Xcode 15/16 (tested against 26.4 SDK).
+- Xcode 26 (tested against the 26.5 SDK).
 - Android Gradle Plugin 8.5.2, Kotlin 2.0.20, Compose BOM 2024.09.01.
 - OkHttp 4.12.0, ML Kit Barcode Scanning 17.3.0, CameraX 1.3.4.
 
