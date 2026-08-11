@@ -29,6 +29,7 @@ local.properties
 # Keystores (secrets!)
 *.jks
 *.keystore
+keystore.properties
 # Kotlin
 .kotlin/
 # Navigation

@@ -24,6 +24,15 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Set up release signing
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > android/app/release.jks
+          printf 'storeFile=app/release.jks\nstorePassword=%s\nkeyAlias=%s\nkeyPassword=%s\n' \
+            "${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" \
+            "${{ secrets.ANDROID_KEY_ALIAS }}" \
+            "${{ secrets.ANDROID_KEY_PASSWORD }}" \
+            > android/keystore.properties
+
       - name: Assemble release APK
         working-directory: android
         run: ./gradlew :app:assembleRelease
