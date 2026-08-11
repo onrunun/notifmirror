@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# Blocks commits that would leak secrets or private material.
+#
+# Installed via:  git config core.hooksPath githooks
+# Bypass intentionally with:  SKIP_SECRET_CHECK=1 git commit
+# (or git commit --no-verify)
+
+set -u
+
+# File name / path patterns that must never be committed.
+blocked_paths=(
+    '\.(jks|keystore|p12|pfx|pkcs12|mobileprovision)$'
+    '(^|/)\.env($|[^e])'
+    '(^|/)local\.properties$'
+)
+
+# High-confidence secret patterns, scanned in the staged content of every file.
+always_flag=(
+    'BEGIN (RSA |DSA |EC |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY'
+    'AKIA[0-9A-Z]{16}'
+    'gh[pousr]_[A-Za-z0-9]{36}'
+    'github_pat_[A-Za-z0-9_]{20,}'
+    'xox[baprs]-[0-9A-Za-z-]{10,}'
+    'sk_live_[0-9a-zA-Z]{20,}'
+    'pk_live_[0-9a-zA-Z]{20,}'
+    'AIza[0-9A-Za-z_-]{35}'
+    'Authorization[[:space:]]*:[[:space:]]*Bearer[[:space:]][A-Za-z0-9._~+/=-]{20,}'
+)
+
+# Gradle signing configs store keystore credentials; flag real-looking values.
+password_assign='(storePassword|keyPassword)[[:space:]]*[:=][[:space:]]*["'"'"'][^"'"'"']+["'"'"']'
+placeholder_re='^(android|changeit|changeme|secret|password|123456|your_password|your-password|placeholder)$'
+
+if [[ "${SKIP_SECRET_CHECK:-}" == "1" ]]; then
+    exit 0
+fi
+
+root="$(git rev-parse --show-toplevel)"
+problems=0
+
+path_re="$(printf '%s|' "${blocked_paths[@]}" | sed 's/|$//')"
+
+while IFS= read -r -d '' file; do
+    rel="${file#./}"
+
+    if [[ "$rel" =~ $path_re ]]; then
+        problems=$((problems + 1))
+        echo "  $rel: forbidden file type/name, refusing to commit" >&2
+    fi
+
+    for pat in "${always_flag[@]}"; do
+        while IFS= read -r m; do
+            problems=$((problems + 1))
+            line="${m%%:*}"
+            echo "  $rel:$line: possible secret, refusing to commit ($pat)" >&2
+        done < <(git show ":$rel" 2>/dev/null | grep -InE "$pat")
+    done
+
+    while IFS= read -r m; do
+        line="${m%%:*}"
+        val="$(printf '%s' "$m" | sed -E "s/.*[[:space:]]*[:=][[:space:]]*[\"']([^\"']+)[\"'].*/\1/")"
+        if [[ ${#val} -ge 6 ]] && ! printf '%s' "$val" | grep -qiE "$placeholder_re"; then
+            problems=$((problems + 1))
+            echo "  $rel:$line: hardcoded keystore credential, refusing to commit" >&2
+        fi
+    done < <(git show ":$rel" 2>/dev/null | grep -InE "$password_assign")
+done < <(git diff --cached --name-only -z --diff-filter=ACMR)
+
+if (( problems > 0 )); then
+    echo "pre-commit: secret check found $problems issue(s). Remove the offending content," >&2
+    echo "or if it is intentional, re-commit with SKIP_SECRET_CHECK=1." >&2
+    exit 1
+fi
