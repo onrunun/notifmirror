@@ -2,6 +2,7 @@ package com.notifmirror.android
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
@@ -17,12 +18,13 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.notifmirror.android.ui.FilterScreen
 import com.notifmirror.android.ui.HomeScreen
 import com.notifmirror.android.ui.PairingScreen
+import com.notifmirror.android.ui.SetupScreen
 import com.notifmirror.android.ui.theme.NotifMirrorTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,7 +46,13 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun Root() {
-    var screen by remember { mutableStateOf(Screen.Home) }
+    var backStack by rememberSaveable { mutableStateOf(listOf(Screen.Home.ordinal)) }
+
+    BackHandler(enabled = backStack.size > 1) {
+        backStack = backStack.dropLast(1)
+    }
+
+    val screen = Screen.entries[backStack.last()]
 
     AnimatedContent(
         targetState = screen,
@@ -60,16 +68,20 @@ private fun Root() {
     ) { current ->
         when (current) {
             Screen.Home -> HomeScreen(
-                onPair = { screen = Screen.Pairing },
-                onOpenFilter = { screen = Screen.Filter }
+                onPair = { backStack = backStack + Screen.Pairing.ordinal },
+                onOpenFilter = { backStack = backStack + Screen.Filter.ordinal }
             )
             Screen.Pairing -> PairingScreen(
-                onDone = { screen = Screen.Home },
-                onCancel = { screen = Screen.Home }
+                onDone = { backStack = backStack + Screen.Setup.ordinal },
+                onCancel = { backStack = backStack.dropLast(1) }
             )
-            Screen.Filter -> FilterScreen(onBack = { screen = Screen.Home })
+            Screen.Setup -> SetupScreen(
+                onDone = { backStack = listOf(Screen.Home.ordinal) },
+                onCancel = { backStack = backStack.dropLast(1) }
+            )
+            Screen.Filter -> FilterScreen(onBack = { backStack = backStack.dropLast(1) })
         }
     }
 }
 
-private enum class Screen { Home, Pairing, Filter }
+private enum class Screen { Home, Pairing, Setup, Filter }
