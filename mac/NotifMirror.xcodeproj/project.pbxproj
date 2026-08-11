@@ -1,0 +1,578 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FD8EC1057FE4A8F0DBEDB03 /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F820303980C37B39FC93D6 /* Preferences.swift */; };
+		1C7105EBC567228A1639C37C /* AppIconCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C34A6FE2D6384ADD4F52768 /* AppIconCache.swift */; };
+		27B03D8354B8C3D9FD56FF55 /* ProtocolFileClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE25C7721450554D41ECA20 /* ProtocolFileClient.swift */; };
+		293C0BE8EF7B357A1B63938A /* WsServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE327A8E97EE282A89AD0429 /* WsServer.swift */; };
+		2DC90AA54BFAB700FD606FCA /* BlockedApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C44EDECDF6CDE515ACBFC7 /* BlockedApps.swift */; };
+		3559D85462F4A2F1BF189DE2 /* AdbClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED25865F1699AD51700ECC9 /* AdbClient.swift */; };
+		37A71B2E27A642BF888419D0 /* FileBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64D127E7A946DC8BDB22B52B /* FileBackend.swift */; };
+		38FDDDC0DEB84A2162D575B9 /* FileTransferCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1A78D4CD2C7958D56617D7 /* FileTransferCenter.swift */; };
+		3C3FDC3D562325FD03A6FB1A /* SelfSignedCert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418ACCDAC83704A9970D87A3 /* SelfSignedCert.swift */; };
+		4E6C15D9B4A666C3DF67D6EB /* MediaController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF6C7AB29EA08C2B09287017 /* MediaController.swift */; };
+		518C7EA4073FBE5459D673C5 /* Protocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 302581CB8ABBF0A7904C074E /* Protocol.swift */; };
+		5DC867B423E3E4E6116E7D83 /* PairingPayloadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E9C53478233F3717A784C76 /* PairingPayloadTests.swift */; };
+		8245D55E6F506F60394F4B17 /* QRCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C5E8F12DA50EF114BE4FCF /* QRCodeView.swift */; };
+		8FD8AF055F900D1F4FDC13F2 /* MainWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE72CEA841E4F972F66E0529 /* MainWindow.swift */; };
+		94247732DBDA966318710447 /* DelegateHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B61ED896A28F636972813 /* DelegateHandler.swift */; };
+		A5D9BD0FE48A5E58A496B860 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 89FEEF837ACA909E37C49E29 /* Assets.xcassets */; };
+		A9BCB467D14621F35319A67F /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 253918F65FDFC9D7E09B2112 /* AppState.swift */; };
+		AC7D8CAFA7D52C319FECEAEF /* WireCodecTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 995E4C51BC2C2010DC1264C5 /* WireCodecTests.swift */; };
+		B01FF261693CB2D149DB0121 /* NotifMirrorApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B732A15CF1195C6D8300923 /* NotifMirrorApp.swift */; };
+		C876A9FC2B51BF6F852F783B /* NotificationHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46A78610403F425FF019A4D /* NotificationHistory.swift */; };
+		CCE892BDFEFD39F13957180C /* ScreenMirror.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1988D0BFDB986D3FECF0ED05 /* ScreenMirror.swift */; };
+		D6402F191E715E45AC022552 /* Pairing.swift in Sources */ = {isa = PBXBuildFile; fileRef = E396095A83D39C96754B9DD9 /* Pairing.swift */; };
+		DA94CEDD2051B0AD18F42610 /* NotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 980507D0F2F64E9FF9D56538 /* NotificationCenter.swift */; };
+		DB7573660F11EE62AF98B76B /* BatteryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790666888BE72C611CF94BB8 /* BatteryStore.swift */; };
+		DC3B6A24235441DD40593769 /* CategoryRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9405C8F4BB09AC8E3A9D0 /* CategoryRegistry.swift */; };
+		DCD67BB80242A248BDCAED0D /* MenuContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A17D0AC776BC85A338ED996 /* MenuContent.swift */; };
+		E51CBC6A99D5BE9176261DB4 /* FilesPane.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DDC1C3CBD27CDEBD075B217 /* FilesPane.swift */; };
+		E69C69874D7E0D00943B3F2C /* StorageAnalyzerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EEFF1AAB18D720E42F582FA /* StorageAnalyzerView.swift */; };
+		F7E84FBBA2AC142C15027B84 /* ClipboardSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = C15E810C9B8EE990713FA5FB /* ClipboardSync.swift */; };
+		FADF51BAE75BA559BBD8A156 /* AttachmentWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 92E0A872AE4CE571C6321171 /* AttachmentWriter.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		0299E46C2DB9AB22106FD436 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 8B312A7F17BA2CF4C58DDAAA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A08889F4903901EE0CAE6B36;
+			remoteInfo = NotifMirror;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1988D0BFDB986D3FECF0ED05 /* ScreenMirror.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenMirror.swift; sourceTree = "<group>"; };
+		253918F65FDFC9D7E09B2112 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		2DDC1C3CBD27CDEBD075B217 /* FilesPane.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilesPane.swift; sourceTree = "<group>"; };
+		2EEFF1AAB18D720E42F582FA /* StorageAnalyzerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageAnalyzerView.swift; sourceTree = "<group>"; };
+		302581CB8ABBF0A7904C074E /* Protocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocol.swift; sourceTree = "<group>"; };
+		3AE25C7721450554D41ECA20 /* ProtocolFileClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProtocolFileClient.swift; sourceTree = "<group>"; };
+		418ACCDAC83704A9970D87A3 /* SelfSignedCert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSignedCert.swift; sourceTree = "<group>"; };
+		46C5E8F12DA50EF114BE4FCF /* QRCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QRCodeView.swift; sourceTree = "<group>"; };
+		5E9C53478233F3717A784C76 /* PairingPayloadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PairingPayloadTests.swift; sourceTree = "<group>"; };
+		63F820303980C37B39FC93D6 /* Preferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		64D127E7A946DC8BDB22B52B /* FileBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileBackend.swift; sourceTree = "<group>"; };
+		6A17D0AC776BC85A338ED996 /* MenuContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuContent.swift; sourceTree = "<group>"; };
+		6B732A15CF1195C6D8300923 /* NotifMirrorApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotifMirrorApp.swift; sourceTree = "<group>"; };
+		790666888BE72C611CF94BB8 /* BatteryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStore.swift; sourceTree = "<group>"; };
+		7D407983F11E241E84D4DFC0 /* NotifMirrorTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NotifMirrorTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		89FEEF837ACA909E37C49E29 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8C34A6FE2D6384ADD4F52768 /* AppIconCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconCache.swift; sourceTree = "<group>"; };
+		92E0A872AE4CE571C6321171 /* AttachmentWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentWriter.swift; sourceTree = "<group>"; };
+		980507D0F2F64E9FF9D56538 /* NotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCenter.swift; sourceTree = "<group>"; };
+		995E4C51BC2C2010DC1264C5 /* WireCodecTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WireCodecTests.swift; sourceTree = "<group>"; };
+		B46A78610403F425FF019A4D /* NotificationHistory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationHistory.swift; sourceTree = "<group>"; };
+		BC1A78D4CD2C7958D56617D7 /* FileTransferCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTransferCenter.swift; sourceTree = "<group>"; };
+		C15E810C9B8EE990713FA5FB /* ClipboardSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClipboardSync.swift; sourceTree = "<group>"; };
+		CED25865F1699AD51700ECC9 /* AdbClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdbClient.swift; sourceTree = "<group>"; };
+		CF6C7AB29EA08C2B09287017 /* MediaController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaController.swift; sourceTree = "<group>"; };
+		D6A9B5B478A09537E4AE7712 /* NotifMirror.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NotifMirror.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D85B61ED896A28F636972813 /* DelegateHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelegateHandler.swift; sourceTree = "<group>"; };
+		DE327A8E97EE282A89AD0429 /* WsServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WsServer.swift; sourceTree = "<group>"; };
+		E396095A83D39C96754B9DD9 /* Pairing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pairing.swift; sourceTree = "<group>"; };
+		EE72CEA841E4F972F66E0529 /* MainWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainWindow.swift; sourceTree = "<group>"; };
+		EFC9405C8F4BB09AC8E3A9D0 /* CategoryRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryRegistry.swift; sourceTree = "<group>"; };
+		F2C44EDECDF6CDE515ACBFC7 /* BlockedApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedApps.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		5FF1FF3098C1D4C4B3A6A9E2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D6A9B5B478A09537E4AE7712 /* NotifMirror.app */,
+				7D407983F11E241E84D4DFC0 /* NotifMirrorTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		6CD5826EE7B3D7D6F119F7E4 /* Notify */ = {
+			isa = PBXGroup;
+			children = (
+				92E0A872AE4CE571C6321171 /* AttachmentWriter.swift */,
+				EFC9405C8F4BB09AC8E3A9D0 /* CategoryRegistry.swift */,
+				D85B61ED896A28F636972813 /* DelegateHandler.swift */,
+				980507D0F2F64E9FF9D56538 /* NotificationCenter.swift */,
+			);
+			path = Notify;
+			sourceTree = "<group>";
+		};
+		6F2430D1325DF83F3471D652 /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				8C34A6FE2D6384ADD4F52768 /* AppIconCache.swift */,
+				F2C44EDECDF6CDE515ACBFC7 /* BlockedApps.swift */,
+				B46A78610403F425FF019A4D /* NotificationHistory.swift */,
+				63F820303980C37B39FC93D6 /* Preferences.swift */,
+			);
+			path = Storage;
+			sourceTree = "<group>";
+		};
+		70020FF71C7D786C8D20E245 /* Net */ = {
+			isa = PBXGroup;
+			children = (
+				CED25865F1699AD51700ECC9 /* AdbClient.swift */,
+				790666888BE72C611CF94BB8 /* BatteryStore.swift */,
+				C15E810C9B8EE990713FA5FB /* ClipboardSync.swift */,
+				64D127E7A946DC8BDB22B52B /* FileBackend.swift */,
+				BC1A78D4CD2C7958D56617D7 /* FileTransferCenter.swift */,
+				CF6C7AB29EA08C2B09287017 /* MediaController.swift */,
+				E396095A83D39C96754B9DD9 /* Pairing.swift */,
+				302581CB8ABBF0A7904C074E /* Protocol.swift */,
+				3AE25C7721450554D41ECA20 /* ProtocolFileClient.swift */,
+				1988D0BFDB986D3FECF0ED05 /* ScreenMirror.swift */,
+				418ACCDAC83704A9970D87A3 /* SelfSignedCert.swift */,
+				DE327A8E97EE282A89AD0429 /* WsServer.swift */,
+			);
+			path = Net;
+			sourceTree = "<group>";
+		};
+		7C65C7DBD1F84BF232C4FE08 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				2DDC1C3CBD27CDEBD075B217 /* FilesPane.swift */,
+				EE72CEA841E4F972F66E0529 /* MainWindow.swift */,
+				6A17D0AC776BC85A338ED996 /* MenuContent.swift */,
+				46C5E8F12DA50EF114BE4FCF /* QRCodeView.swift */,
+				2EEFF1AAB18D720E42F582FA /* StorageAnalyzerView.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		86BB997683DB767890B6EFB8 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		8A163C266EA87F5AFFF892B1 /* NotifMirror */ = {
+			isa = PBXGroup;
+			children = (
+				253918F65FDFC9D7E09B2112 /* AppState.swift */,
+				89FEEF837ACA909E37C49E29 /* Assets.xcassets */,
+				6B732A15CF1195C6D8300923 /* NotifMirrorApp.swift */,
+				70020FF71C7D786C8D20E245 /* Net */,
+				6CD5826EE7B3D7D6F119F7E4 /* Notify */,
+				86BB997683DB767890B6EFB8 /* Preview Content */,
+				6F2430D1325DF83F3471D652 /* Storage */,
+				7C65C7DBD1F84BF232C4FE08 /* UI */,
+			);
+			path = NotifMirror;
+			sourceTree = "<group>";
+		};
+		DCF27C05BB4718126A13A9DB /* NotifMirrorTests */ = {
+			isa = PBXGroup;
+			children = (
+				5E9C53478233F3717A784C76 /* PairingPayloadTests.swift */,
+				995E4C51BC2C2010DC1264C5 /* WireCodecTests.swift */,
+			);
+			path = NotifMirrorTests;
+			sourceTree = "<group>";
+		};
+		EB0215C072E1A840A431EEB1 = {
+			isa = PBXGroup;
+			children = (
+				8A163C266EA87F5AFFF892B1 /* NotifMirror */,
+				DCF27C05BB4718126A13A9DB /* NotifMirrorTests */,
+				5FF1FF3098C1D4C4B3A6A9E2 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A08889F4903901EE0CAE6B36 /* NotifMirror */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5A292F1FE7EF99102C0D64ED /* Build configuration list for PBXNativeTarget "NotifMirror" */;
+			buildPhases = (
+				20C55C71D3E07C12E229AAB9 /* Sources */,
+				85D419DE3913BB5D6CEAF47A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotifMirror;
+			packageProductDependencies = (
+			);
+			productName = NotifMirror;
+			productReference = D6A9B5B478A09537E4AE7712 /* NotifMirror.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D82422A696CABBA9465DCC90 /* NotifMirrorTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B93F34C7C7091540006F77D0 /* Build configuration list for PBXNativeTarget "NotifMirrorTests" */;
+			buildPhases = (
+				66C0BCF47B93EA9508E18A57 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				0265ECC6CFAF34469AF252E1 /* PBXTargetDependency */,
+			);
+			name = NotifMirrorTests;
+			packageProductDependencies = (
+			);
+			productName = NotifMirrorTests;
+			productReference = 7D407983F11E241E84D4DFC0 /* NotifMirrorTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8B312A7F17BA2CF4C58DDAAA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					A08889F4903901EE0CAE6B36 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+					D82422A696CABBA9465DCC90 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Manual;
+					};
+				};
+			};
+			buildConfigurationList = 8F7134B0F4A265F5E6B5138D /* Build configuration list for PBXProject "NotifMirror" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = EB0215C072E1A840A431EEB1;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5FF1FF3098C1D4C4B3A6A9E2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A08889F4903901EE0CAE6B36 /* NotifMirror */,
+				D82422A696CABBA9465DCC90 /* NotifMirrorTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		85D419DE3913BB5D6CEAF47A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5D9BD0FE48A5E58A496B860 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		20C55C71D3E07C12E229AAB9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3559D85462F4A2F1BF189DE2 /* AdbClient.swift in Sources */,
+				1C7105EBC567228A1639C37C /* AppIconCache.swift in Sources */,
+				A9BCB467D14621F35319A67F /* AppState.swift in Sources */,
+				FADF51BAE75BA559BBD8A156 /* AttachmentWriter.swift in Sources */,
+				DB7573660F11EE62AF98B76B /* BatteryStore.swift in Sources */,
+				2DC90AA54BFAB700FD606FCA /* BlockedApps.swift in Sources */,
+				DC3B6A24235441DD40593769 /* CategoryRegistry.swift in Sources */,
+				F7E84FBBA2AC142C15027B84 /* ClipboardSync.swift in Sources */,
+				94247732DBDA966318710447 /* DelegateHandler.swift in Sources */,
+				37A71B2E27A642BF888419D0 /* FileBackend.swift in Sources */,
+				38FDDDC0DEB84A2162D575B9 /* FileTransferCenter.swift in Sources */,
+				E51CBC6A99D5BE9176261DB4 /* FilesPane.swift in Sources */,
+				8FD8AF055F900D1F4FDC13F2 /* MainWindow.swift in Sources */,
+				4E6C15D9B4A666C3DF67D6EB /* MediaController.swift in Sources */,
+				DCD67BB80242A248BDCAED0D /* MenuContent.swift in Sources */,
+				B01FF261693CB2D149DB0121 /* NotifMirrorApp.swift in Sources */,
+				DA94CEDD2051B0AD18F42610 /* NotificationCenter.swift in Sources */,
+				C876A9FC2B51BF6F852F783B /* NotificationHistory.swift in Sources */,
+				D6402F191E715E45AC022552 /* Pairing.swift in Sources */,
+				0FD8EC1057FE4A8F0DBEDB03 /* Preferences.swift in Sources */,
+				518C7EA4073FBE5459D673C5 /* Protocol.swift in Sources */,
+				27B03D8354B8C3D9FD56FF55 /* ProtocolFileClient.swift in Sources */,
+				8245D55E6F506F60394F4B17 /* QRCodeView.swift in Sources */,
+				CCE892BDFEFD39F13957180C /* ScreenMirror.swift in Sources */,
+				3C3FDC3D562325FD03A6FB1A /* SelfSignedCert.swift in Sources */,
+				E69C69874D7E0D00943B3F2C /* StorageAnalyzerView.swift in Sources */,
+				293C0BE8EF7B357A1B63938A /* WsServer.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66C0BCF47B93EA9508E18A57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5DC867B423E3E4E6116E7D83 /* PairingPayloadTests.swift in Sources */,
+				AC7D8CAFA7D52C319FECEAEF /* WireCodecTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		0265ECC6CFAF34469AF252E1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A08889F4903901EE0CAE6B36 /* NotifMirror */;
+			targetProxy = 0299E46C2DB9AB22106FD436 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		169A561E4DC145DC3AF85BFC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+		1B3312FFD1CB443DED7D2716 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		2A3E99801D71D05BA4C513F4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.notifmirror.app.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NotifMirror.app/Contents/MacOS/NotifMirror";
+			};
+			name = Release;
+		};
+		543A728AA1CC23CCFA63ADF0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_STYLE = Manual;
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.notifmirror.app.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/NotifMirror.app/Contents/MacOS/NotifMirror";
+			};
+			name = Debug;
+		};
+		E6F0781D8329B4F3F0575D88 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NotifMirror/NotifMirror.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NotifMirror/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.notifmirror.app;
+				PRODUCT_NAME = NotifMirror;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EEDADB8FB60015C9BD3316A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = NotifMirror/NotifMirror.entitlements;
+				COMBINE_HIDPI_IMAGES = YES;
+				ENABLE_APP_SANDBOX = NO;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = NotifMirror/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.notifmirror.app;
+				PRODUCT_NAME = NotifMirror;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5A292F1FE7EF99102C0D64ED /* Build configuration list for PBXNativeTarget "NotifMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E6F0781D8329B4F3F0575D88 /* Debug */,
+				EEDADB8FB60015C9BD3316A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		8F7134B0F4A265F5E6B5138D /* Build configuration list for PBXProject "NotifMirror" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				169A561E4DC145DC3AF85BFC /* Debug */,
+				1B3312FFD1CB443DED7D2716 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B93F34C7C7091540006F77D0 /* Build configuration list for PBXNativeTarget "NotifMirrorTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				543A728AA1CC23CCFA63ADF0 /* Debug */,
+				2A3E99801D71D05BA4C513F4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8B312A7F17BA2CF4C58DDAAA /* Project object */;
+}

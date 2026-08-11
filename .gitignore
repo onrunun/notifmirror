@@ -1,0 +1,68 @@
+# ---------- macOS ----------
+.DS_Store
+._*
+.AppleDouble
+.LSOverride
+
+# ---------- Editors / IDEs ----------
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# ---------- Claude ----------
+.claude/
+
+# ---------- Android / Gradle ----------
+# Gradle caches & build outputs
+.gradle/
+**/build/
+# Local SDK path & developer-specific config
+local.properties
+# Generated / binary
+*.class
+*.apk
+*.aab
+*.ap_
+*.dex
+# Keystores (secrets!)
+*.jks
+*.keystore
+# Kotlin
+.kotlin/
+# Navigation
+captures/
+
+# ---------- Xcode / macOS app ----------
+# Per-user Xcode state
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+# Workspace / scheme user overrides
+*.xcworkspace/xcuserdata/
+# Build products
+DerivedData/
+build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+# CocoaPods (if used later)
+Pods/
+# Carthage
+Carthage/Build/
+# SwiftPM
+.swiftpm/
+.build/
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# ---------- Node / generic ----------
+node_modules/
+*.log
+.env
+.env.*
+!.env.example

@@ -1,0 +1,46 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:BatteryBridge.kt$BatteryBridge$private fun publishFrom(intent: Intent, force: Boolean)</ID>
+    <ID>CyclomaticComplexMethod:FileBridge.kt$FileBridge$private fun pump(s: Outgoing)</ID>
+    <ID>CyclomaticComplexMethod:FileBrowseBridge.kt$FileBrowseBridge$private fun handleDu(msg: WireMessage.FsDu)</ID>
+    <ID>CyclomaticComplexMethod:FileBrowseBridge.kt$FileBrowseBridge$private fun handleRead(msg: WireMessage.FsRead)</ID>
+    <ID>CyclomaticComplexMethod:MediaBridge.kt$MediaBridge$fun handleCommand(cmd: String, value: Int? = null)</ID>
+    <ID>CyclomaticComplexMethod:Messages.kt$WireCodec$fun decode(text: String): WireMessage</ID>
+    <ID>CyclomaticComplexMethod:Messages.kt$WireCodec$fun encode(message: WireMessage): String</ID>
+    <ID>CyclomaticComplexMethod:SendActivity.kt$SendActivity$override fun onCreate(savedInstanceState: Bundle?)</ID>
+    <ID>LongMethod:FilterScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun FilterScreen(onBack: () -&gt; Unit)</ID>
+    <ID>LongMethod:HomeScreen.kt$@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class) @Composable fun HomeScreen(onPair: () -&gt; Unit, onOpenFilter: () -&gt; Unit)</ID>
+    <ID>LongMethod:Messages.kt$WireCodec$fun decode(text: String): WireMessage</ID>
+    <ID>LongMethod:Messages.kt$WireCodec$fun encode(message: WireMessage): String</ID>
+    <ID>LoopWithTooManyJumpStatements:FileBridge.kt$FileBridge$while</ID>
+    <ID>LoopWithTooManyJumpStatements:FileBrowseBridge.kt$FileBrowseBridge$while</ID>
+    <ID>LoopWithTooManyJumpStatements:WsClient.kt$WsClient$while</ID>
+    <ID>MatchingDeclarationName:SpkiPinning.kt$SpkiPinTrustManager : X509TrustManager</ID>
+    <ID>MaxLineLength:FileBrowseBridge.kt$FileBrowseBridge$DebugLog.line("[fb] read start reqId=${msg.reqId} size=$size wifiLockHeld=${MirrorCore.isWifiLockHeld()}")</ID>
+    <ID>MaxLineLength:FileBrowseBridge.kt$FileBrowseBridge$val m = "[fb] progress reqId=${msg.reqId} off=$offset (${offset*100/size}%) elapsed=${elapsedMs}ms avg=${mbps}KB/s"</ID>
+    <ID>NestedBlockDepth:FileBridge.kt$FileBridge$private fun pump(s: Outgoing)</ID>
+    <ID>NestedBlockDepth:FileBrowseBridge.kt$FileBrowseBridge$private fun handleList(msg: WireMessage.FsList)</ID>
+    <ID>NestedBlockDepth:SendActivity.kt$SendActivity$private fun queryMeta(uri: Uri): Meta</ID>
+    <ID>SwallowedException:Discovery.kt$Discovery$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:ClipboardBridge.kt$ClipboardBridge$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:Discovery.kt$Discovery$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:FileBridge.kt$FileBridge$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:FileBrowseBridge.kt$FileBrowseBridge$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:MediaBridge.kt$MediaBridge$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:MirrorCore.kt$MirrorCore$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:MirrorListenerService.kt$MirrorListenerService$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:SendActivity.kt$SendActivity$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:WsClient.kt$WsClient$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:WsClient.kt$WsClient.&lt;no name provided&gt;$e: Exception</ID>
+    <ID>TooManyFunctions:FileBridge.kt$FileBridge</ID>
+    <ID>TooManyFunctions:MirrorCore.kt$MirrorCore : WsClientCallbacks</ID>
+    <ID>UnusedPrivateProperty:FileBrowseBridge.kt$FileBrowseBridge$private val context: Context</ID>
+    <ID>UseCheckOrError:FileBridge.kt$FileBridge$throw IllegalStateException("MediaStore insert returned null")</ID>
+    <ID>UseCheckOrError:FileBridge.kt$FileBridge$throw IllegalStateException("openOutputStream returned null")</ID>
+    <ID>VariableNaming:FileBridge.kt$FileBridge$@Suppress("UNUSED_PARAMETER") val _u = offset</ID>
+    <ID>VariableNaming:FileBridge.kt$FileBridge$@Suppress("UNUSED_PARAMETER") val _v = last</ID>
+    <ID>VariableNaming:FileBrowseBridge.kt$FileBrowseBridge$@Suppress("UNUSED_PARAMETER") val _unused = offset</ID>
+  </CurrentIssues>
+</SmellBaseline>

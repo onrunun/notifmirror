@@ -1,0 +1,86 @@
+name: NotifMirror
+options:
+  bundleIdPrefix: com.notifmirror
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+  generateEmptyDirectories: true
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    SWIFT_VERSION: "5.9"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Manual
+    CODE_SIGN_IDENTITY: "-"
+
+schemes:
+  NotifMirror:
+    build:
+      targets:
+        NotifMirror: all
+        NotifMirrorTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - NotifMirrorTests
+    archive:
+      config: Release
+
+targets:
+  NotifMirror:
+    type: application
+    platform: macOS
+    sources:
+      - path: NotifMirror
+        excludes:
+          - "Info.plist"
+          - "NotifMirror.entitlements"
+    info:
+      path: NotifMirror/Info.plist
+      properties:
+        LSUIElement: YES
+        LSApplicationCategoryType: public.app-category.utilities
+        CFBundleDisplayName: NotifMirror
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        LSMinimumSystemVersion: "$(MACOSX_DEPLOYMENT_TARGET)"
+        NSHumanReadableCopyright: ""
+        NSBonjourServices:
+          - _andnotif._tcp
+        NSLocalNetworkUsageDescription: "NotifMirror discovers and receives notifications from your paired Android device on your local network."
+    entitlements:
+      path: NotifMirror/NotifMirror.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.notifmirror.app
+        PRODUCT_NAME: NotifMirror
+        CODE_SIGN_ENTITLEMENTS: NotifMirror/NotifMirror.entitlements
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: NO
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        COMBINE_HIDPI_IMAGES: YES
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+
+  NotifMirrorTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: NotifMirrorTests
+    dependencies:
+      - target: NotifMirror
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.notifmirror.app.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/NotifMirror.app/Contents/MacOS/NotifMirror"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+        CODE_SIGN_STYLE: Manual
+        CODE_SIGN_IDENTITY: "-"

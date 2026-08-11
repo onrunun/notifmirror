@@ -1,0 +1,50 @@
+# SwiftLint configuration for NotifMirror.
+# Tuned to the project's existing conventions; keep new violations at zero.
+# Run: swiftlint lint (in mac/)  or  swiftlint --fix
+
+included:
+  - NotifMirror
+  - NotifMirrorTests
+
+excluded:
+  - build
+
+disabled_rules:
+  # Short closure variable names (map { e in ... }) are idiomatic here.
+  - identifier_name
+  # The codebase deliberately aligns columns in literal/argument lists.
+  - comma
+  - colon
+  - trailing_comma
+  # Large UI files and long method bodies are split across many files on purpose.
+  - file_length
+  - type_body_length
+  - function_body_length
+  - cyclomatic_complexity
+  - large_tuple
+  # Single-line `if (x)` wrapping is used in several spots.
+  - control_statement
+  - statement_position
+  - for_where
+  # Explicit `= nil` initialization is used as a style choice.
+  - implicit_optional_initialization
+  # JSONSerialization.decode structures nested types two levels deep.
+  - nesting
+
+opt_in_rules:
+  - contains_over_filter_is_empty
+  - contains_over_filter_count
+  - empty_count
+  - empty_string
+  - first_where
+  - last_where
+  - redundant_nil_coalescing
+  - sorted_imports
+  - unneeded_parentheses_in_closure_argument
+  - vertical_whitespace_closing_braces
+
+line_length:
+  warning: 300
+  error: 400
+
+reporter: xcode

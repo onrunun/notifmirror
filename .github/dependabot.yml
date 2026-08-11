@@ -1,0 +1,27 @@
+version: 2
+updates:
+  # Android / Gradle dependencies (version catalog + build scripts).
+  - package-ecosystem: "gradle"
+    directory: "/android"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      androidx:
+        patterns:
+          - "androidx.*"
+          - "com.google.accompanist*"
+          - "com.google.mlkit*"
+      kotlin:
+        patterns:
+          - "org.jetbrains.kotlin*"
+      okhttp:
+        patterns:
+          - "com.squareup.okhttp3*"
+
+  # GitHub Actions used across all workflows.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10

@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: NotifMirror README
+    url: https://github.com/onrunun/notifmirror#readme
+    about: Setup, pairing, and troubleshooting steps are documented here.
