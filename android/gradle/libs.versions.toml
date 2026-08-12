@@ -11,7 +11,7 @@ securityCrypto = "1.1.0-alpha06"
 camerax = "1.4.1"
 mlkitBarcode = "17.3.0"
 accompanist = "0.34.0"
-detekt = "1.23.7"
+detekt = "1.23.8"
 junit = "4.13.2"
 orgjson = "20240303"
 
