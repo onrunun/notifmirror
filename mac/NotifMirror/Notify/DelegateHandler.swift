@@ -19,6 +19,16 @@ final class DelegateHandler: NSObject, UNUserNotificationCenterDelegate {
         let identifier = response.actionIdentifier
 
         Task { @MainActor in
+            // Clipboard-arrival banners aren't phone notifications — tapping
+            // the body enables sync and copies the held clip. They must never
+            // fall through to the phone-notification actions below.
+            if key.hasPrefix("notifmirror.clip") {
+                if identifier == UNNotificationDefaultActionIdentifier {
+                    ClipboardSync.shared.acceptPendingClip()
+                }
+                completionHandler()
+                return
+            }
             if identifier == UNNotificationDismissActionIdentifier {
                 WsServer.shared.sendDismiss(key: key)
             } else if identifier == UNNotificationDefaultActionIdentifier {

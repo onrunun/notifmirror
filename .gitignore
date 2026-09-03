@@ -10,6 +10,7 @@
 .vscode/
 *.swp
 *.swo
+.zcode/
 
 # ---------- Claude ----------
 .claude/

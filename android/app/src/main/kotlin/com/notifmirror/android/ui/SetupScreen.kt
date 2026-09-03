@@ -150,8 +150,8 @@ fun SetupScreen(onDone: () -> Unit, onCancel: () -> Unit) {
 
             PermissionRow(
                 title = "Notification access",
-                subtitle = "Required — this is what lets the app read " +
-                    "notifications and keeps the connection to your Mac alive.",
+                subtitle = "Required — reads other apps' notifications and " +
+                    "keeps the connection to your Mac alive.",
                 granted = notificationAccess,
                 onClick = {
                     val intent = if (Build.VERSION.SDK_INT >= 30) {
@@ -170,9 +170,9 @@ fun SetupScreen(onDone: () -> Unit, onCancel: () -> Unit) {
 
             if (Build.VERSION.SDK_INT >= 33) {
                 PermissionRow(
-                    title = "Notifications",
-                    subtitle = "Needed so files you receive and test " +
-                        "notifications show up on your phone.",
+                    title = "Own notifications",
+                    subtitle = "Lets NotifMirror itself show alerts for " +
+                        "received files and test notifications.",
                     granted = postNotifications,
                     onClick = {
                         postNotifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)

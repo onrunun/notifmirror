@@ -505,14 +505,20 @@ private fun PermissionsCard(
             SettingRow(
                 icon = Icons.Filled.NotificationsActive,
                 title = "Notification access",
-                subtitle = if (notificationAccessGranted) "Granted" else "Tap to grant",
+                subtitle = if (notificationAccessGranted)
+                    "Granted — reads other apps' notifications"
+                else
+                    "Tap to grant — required for mirroring",
                 statusOk = notificationAccessGranted,
                 onClick = onOpenNotificationAccess
             )
             SettingRow(
                 icon = Icons.Filled.Info,
-                title = "Notifications",
-                subtitle = if (postNotificationsGranted) "Granted" else "Needed for received files & the Mac's test",
+                title = "Own notifications",
+                subtitle = if (postNotificationsGranted)
+                    "Granted — shows files & test alerts"
+                else
+                    "Needed for received files & the Mac's test",
                 statusOk = postNotificationsGranted,
                 onClick = onOpenPostNotifications
             )
@@ -618,8 +624,8 @@ private fun TipCard() {
                 )
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "Share text to NotifMirror from any app, or add the \"Send clipboard\" " +
-                        "tile to Quick Settings for instant sending.",
+                    "Select text anywhere and tap \"Send to Mac\", share text to NotifMirror " +
+                        "from any app, or add the \"Send clipboard\" tile to Quick Settings.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSecondaryContainer
                 )
