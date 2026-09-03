@@ -9,9 +9,11 @@ import android.util.Log
 import android.widget.Toast
 
 /**
- * Transparent receiver for share intents. Takes the first item from the
- * incoming ACTION_SEND / ACTION_SEND_MULTIPLE payload, hands it to the
- * [FileBridge] running inside the foreground service, and finishes.
+ * Transparent receiver for share intents and text-selection actions. Takes
+ * the first item from the incoming ACTION_SEND / ACTION_SEND_MULTIPLE payload
+ * (or the ACTION_PROCESS_TEXT selection from the system text-selection
+ * toolbar), hands text to [MirrorCore] as a clip or files to the [FileBridge]
+ * running inside the foreground service, and finishes.
  *
  * No UI — the toast is our sole acknowledgement. Progress shows in the Mac
  * menu bar; a future polish step could surface a notification on Android too.
@@ -23,10 +25,13 @@ class SendActivity : Activity() {
 
         val intent = intent
 
-        // Shared plain text → push as a clip message.
-        val sharedText = if (intent?.action == Intent.ACTION_SEND) {
-            intent.getStringExtra(Intent.EXTRA_TEXT)
-        } else null
+        // Shared or selected plain text → push as a clip message.
+        val sharedText = when (intent?.action) {
+            Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
+            Intent.ACTION_PROCESS_TEXT ->
+                intent.getCharSequenceExtra(Intent.EXTRA_PROCESS_TEXT)?.toString()
+            else -> null
+        }
         if (!sharedText.isNullOrEmpty()) {
             MirrorCore.dispatch(
                 com.notifmirror.android.protocol.WireMessage.Clip(

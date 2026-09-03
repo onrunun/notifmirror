@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">NotifMirror</string>
+    <!-- Label shown in the system text-selection toolbar for the
+         ACTION_PROCESS_TEXT entry point. -->
+    <string name="send_to_mac">Send to Mac</string>
 </resources>

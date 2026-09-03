@@ -72,6 +72,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
+            <!-- Shows up in the system text-selection toolbar: selecting text
+                 in any app offers "Send to Mac". -->
+            <intent-filter android:label="@string/send_to_mac">
+                <action android:name="android.intent.action.PROCESS_TEXT" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <service
