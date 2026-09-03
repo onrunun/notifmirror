@@ -20,7 +20,7 @@ val hasReleaseSigning = keystoreProperties.containsKey("storeFile") &&
 
 android {
     namespace = "com.notifmirror.android"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.notifmirror.android"
@@ -57,10 +57,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 
     buildFeatures {
@@ -110,4 +106,10 @@ dependencies {
     // WireCodec uses org.json; the Android stub throws in JVM unit tests, so
     // pull in the real implementation for the test classpath only.
     testImplementation(libs.orgjson)
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
